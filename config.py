@@ -12,7 +12,7 @@ connection = pymysql.connect(
 
 port_number = 5002
 TOKEN = '1090954125:AAHA-WX4zsCnVr9pcm2nRXuwuuXDqaM1cQA'
-TELEGRAM_INIT_WEBHOOK_URL = 'https://api.telegram.org/bot{}/setWebhook?url=https://489e83a4.ngrok.io/message' \
+TELEGRAM_INIT_WEBHOOK_URL = 'https://api.telegram.org/bot{}/setWebhook?url=https://55a6e4fa.ngrok.io/message' \
     .format(TOKEN)
 
 start_msg = "hello dear user.\n Sport league bot provides you important updates about your favorite matches " \

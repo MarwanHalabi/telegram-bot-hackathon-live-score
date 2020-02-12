@@ -86,25 +86,3 @@ def update_score(match_status):
             format(match_status["home_team_score"], match_status["visitor_team_score"], datetime.now(), True)
         insert_to_DB(update_query)
 
-
-match_details = {"match_id": 10, "home_team": "sokor", "visitor_team": "sho3la",
-                 "start_time": datetime.today().strftime('%Y-%m-%d %H:%M'),
-                 "day_date": datetime.today().strftime('%Y-%m-%d'), "match_status": 0}
-
-# add_matches(match_details)
-# get_today_matches()
-
-
-match_details2 = {"match_id": 40, "home_team": "Wathba", "visitor_team": "Al_sa7a",
-                  "start_time": "2020-02-12 20:30:30",
-                  "day_date": datetime.today().strftime('%Y-%m-%d'), "match_status": 0}
-
-# get_today_matches()
-# print(match_details2)
-
-# add_match(match_details2)
-# add_match(match_details)
-# add_match_subscription(10, 50)
-# add_match_subscription(10, 100)
-# add_match_subscription(40,30)
-# print(get_subscription_list())

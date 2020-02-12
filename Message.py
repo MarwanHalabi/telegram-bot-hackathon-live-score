@@ -1,6 +1,7 @@
 from config import *
 import requests
 from Models import Matches_model
+# import telegram
 
 
 def message(user_message):
@@ -13,6 +14,7 @@ def message(user_message):
         if command == "/start":
             parse(TOKEN, user_message, start_msg)
         elif command == "/list":
+            print("into list")
             list_of_matches = Matches_model.get_today_matches()
             parse(TOKEN, user_message, match_show(list_of_matches))
         elif command == "/subscribe":
@@ -25,6 +27,15 @@ def message(user_message):
             pass
     except:
         pass
+
+# def UI():
+#     button_list = [
+#         InlineKeyboardButton("col1", callback_data=...),
+#         InlineKeyboardButton("col2", callback_data=...),
+#         InlineKeyboardButton("row 2", callback_data=...)
+#     ]
+#     reply_markup = InlineKeyboardMarkup(util.build_menu(button_list, n_cols=2))
+#     bot.send_message(..., "A two-column menu", reply_markup=reply_markup)
 
 
 def parse(token, user_message, parse_input):
