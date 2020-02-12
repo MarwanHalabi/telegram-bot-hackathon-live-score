@@ -25,6 +25,3 @@ start_msg = "hello dear user.\n Sport league bot provides you important updates 
 subscribe = "you just subscribed to {} match"
 unsubscribe = "you just unsubscribed to {} match"
 
-list_of_matches = [{"match_id": "123", "home_team": "name1", "visitor_team": "team2", "start_time": "11/12/2020 12:00"}
-    , {"match_id": "456", "home_team": "Al sokor", "visitor_team": "Al saha", "start_time": "11/12/2020 15:00"}
-    , {"match_id": "111", "home_team": "Roma", "visitor_team": "Milan", "start_time": "11/12/2020 15:00"}]
