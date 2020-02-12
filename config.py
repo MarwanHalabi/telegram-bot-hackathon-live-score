@@ -3,7 +3,7 @@ import pymysql
 connection = pymysql.connect(
     host="localhost",
     user="root",
-    password="root",
+    password="Mh081263",
     db="league",
     charset="utf8",
     cursorclass=pymysql.cursors.DictCursor
@@ -20,7 +20,7 @@ start_msg = "hello dear user.\n Sport league bot provides you important updates 
             ", subscriptions etc in a database. \nEvery user can talk to the bot and ask for services" \
             ", by the following commands as described below.\n /list:\n /subscribe {match_id}\n/unsubscribe {match_id}"
 
-list_of_matches_msg = "id<123> BHC vs RMA\nid<432> INR vs IMC\nid<432> ROM vs NFC"
+# list_of_matches_msg = "id<123> BHC vs RMA\nid<432> INR vs IMC\nid<432> ROM vs NFC"
 
 subscribe = "you just subscribed to {} match"
 unsubscribe = "you just unsubscribed to {} match"
