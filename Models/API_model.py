@@ -133,7 +133,9 @@ def get_today_games(day_date: date = date.today().strftime("%Y-%m-%d")):
 def get_live_score():
     live_games = Matches_model.get_live_matches()
     if live_games and live_games.len():
-        api_response = requests.get('https://api-nba-v1.p.rapidapi.com/games/live/')
+        api_response = requests.get('https://api-nba-v1.p.rapidapi.com/games/live/',
+                                headers={"x-rapidapi-host": "api-nba-v1.p.rapidapi.com",
+                                         "x-rapidapi-key": "5c516b2a70msh137afc3cb1fbc89p1b4a45jsndc2d8a4ec944"})
         if api_response.status_code == 200:
             json_response = api_response.json()
     games_response = json_response["api"]["games"]
