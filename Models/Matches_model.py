@@ -3,7 +3,7 @@ from datetime import datetime
 
 
 def add_match(match_details):
-    query = "insert into matches ({},\"{}\",\"{}\",\"{}\",\"{}\",{})".format(
+    query = "insert into matches ({},\"{}\",\"{}\",\"{}\",\"{}\",{})".format(  # add_match()
         match_details["match_id"], match_details["home_team"],
         match_details["visitor_team"],
         match_details["start_time"],
@@ -16,7 +16,7 @@ def add_match(match_details):
 def get_today_matches():
     today_date = datetime.today().strftime('%Y-%m-%d')
     query = "select match_id,home_team,visitor_team,start_time from matches where day_date = \"{}\"".format(today_date)
-    print(get_data_from_DB(query))
+    return get_data_from_DB(query)
 
 
 def add_match_subscription(user_id, match_id):
