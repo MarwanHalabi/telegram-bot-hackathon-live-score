@@ -128,9 +128,7 @@ def get_team_subscribers(team_name):
     return users_id_list
 
 
-
-
-
+'''
 team_details = {"team_id": 10, "team_name": "sokor", "team_nickname": "sok", "team_logo": "http://sdncj.png"}
 team_details1 = {"team_id": 20, "team_name": "wthba", "team_nickname": "sok", "team_logo": "http://sdncj.png"}
 team_details2 = {"team_id": 30, "team_name": "sho3la", "team_nickname": "sok", "team_logo": "http://sdncj.png"}
@@ -155,7 +153,7 @@ match_details = {"match_id": 10, "home_team": "sokor", "visitor_team": "sho3la",
 match_details2 = {"match_id": 40, "home_team": "Wathba", "visitor_team": "Al_sa7a",
                   "start_time": "2020-02-12 20:30:30",
                   "day_date": datetime.today().strftime('%Y-%m-%d'), "match_status": 0}
-
+'''
 # get_today_matches()
 # print(match_details2)
 
