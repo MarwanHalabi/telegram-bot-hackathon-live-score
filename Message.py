@@ -33,6 +33,12 @@ def parse(token, user_message, parse_input):
             .format(token, user_message['chat']['id'], parse_input))
 
 
+def parseSend(token, user_message, parse_input):
+    res = requests.get(
+        "https://api.telegram.org/bot{}/sendMessage?chat_id={}&text={}"
+            .format(token, user_message, parse_input))
+
+
 def subscribe_msg(match_id):  # unsubscribe
     return subscribe.format(match_id)
 

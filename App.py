@@ -20,8 +20,9 @@ def handle_message():
 
 
 if __name__ == '__main__':
-    app.run(port=port_number)
     Bot.send_game_data()
+    Bot.alter_data()
+    app.run(port=port_number)
     # time.sleep(10)
     # API_model.get_live_score()
 

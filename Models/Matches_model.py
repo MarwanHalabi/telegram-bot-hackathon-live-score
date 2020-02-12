@@ -24,41 +24,48 @@ def add_match_subscription(match_id, user_id):
 
 
 def remove_match_subscription(match_id, user_id):
-    query = "delete from match_subscription where match_subscription.user_id = {} and match_subscription.match_id = {}".format(int(user_id), int(match_id))
+    query = "delete from match_subscription where match_subscription.user_id = {} and match_subscription.match_id = {}".format(
+        int(user_id), int(match_id))
     insert_to_DB(query)
 
 
 def get_subscription_list():
+    print("here")
     lis_of_match_details = []
     match_sub = {}
     current_date = datetime.today().strftime('%Y-%m-%d %H:%M:%S')
-    get_id_query = "select match_subscription.match_id from match_subscription,matches where matches.start_time <= \"{}\" " \
-                   "and matches.match_id = match_subscription.match_id".format(
-        current_date)
+    get_id_query = "select match_subscription.match_id from match_subscription,matches,match_status where " \
+                   "matches.start_time <= \"{}\" " \
+                   "and matches.match_id = match_subscription.match_id and matches.match_id = match_status.match_id " \
+                   "and match_status.`CHANGED` = {} GROUP BY match_subscription.match_id".format(current_date, True)
     live_matches = get_data_from_DB(get_id_query)
-    for match in live_matches:
-        match_sub["match_id"] = match["match_id"]
+    if live_matches:
+        for match in live_matches:
+            match_sub["match_id"] = match["match_id"]
 
-        match_details_query = "select matches.home_team,matches.visitor_team,match_status.home_team_score,match_status.visitor_team_score FROM" \
-                              " matches, match_status WHERE matches.match_id = {}  AND match_status.match_id = {}".format(
-            match["match_id"], match["match_id"])
+            match_details_query = "select matches.home_team,matches.visitor_team,match_status.home_team_score,match_status.visitor_team_score FROM" \
+                                  " matches, match_status WHERE matches.match_id = {}  AND match_status.match_id = {}".format(
+                match["match_id"], match["match_id"])
 
-        match_details = get_data_from_DB(match_details_query)
+            match_details = get_data_from_DB(match_details_query)
 
-        for matches in match_details:
-            match_sub["home_team"] = matches["home_team"]
-            match_sub["visitor_team"] = matches["visitor_team"]
-            match_sub["home_team_score"] = matches["home_team_score"]
-            match_sub["visitor_team_score"] = matches["visitor_team_score"]
+            for matches in match_details:
+                match_sub["home_team"] = matches["home_team"]
+                match_sub["visitor_team"] = matches["visitor_team"]
+                match_sub["home_team_score"] = matches["home_team_score"]
+                match_sub["visitor_team_score"] = matches["visitor_team_score"]
 
-        users_list = []
-        get_users_query = "SELECT match_subscription.user_id from match_subscription WHERE match_subscription.match_id = {}".format(match["match_id"])
+            users_list = []
+            get_users_query = "SELECT match_subscription.user_id from match_subscription WHERE match_subscription.match_id = {}".format(
+                match["match_id"])
 
-        users = get_data_from_DB(get_users_query)
-        for user in users:
-            users_list.append(user["user_id"])
-        match_sub["users"] = users_list
-        lis_of_match_details.append(match_sub)
+            users = get_data_from_DB(get_users_query)
+            for user in users:
+                users_list.append(user["user_id"])
+            match_sub["users"] = users_list
+            lis_of_match_details.append(match_sub)
+        update_query = "UPDATE `match_status` SET `CHANGED` = {}".format(False)
+        insert_to_DB(update_query)
     return lis_of_match_details
 
 
@@ -71,13 +78,13 @@ def get_live_matches():
 
 def update_score(match_status):
     query = "SELECT * FROM match_status WHERE match_id = {}".format(match_status["match_id"])
-    result = get_data_from_DB(query)
+    result = get_data_from_DB(query)[0]
     if result["home_team_score"] != match_status["home_team_score"] \
             or result["visitor_team_score"] != match_status["visitor_team_score"]:
-        update_query = "UPDATE `match_status` SET `home_team_score` = '{}', " \
-                       "`visitor_team_score` = '{}', `last_updated` = {}, `CHANGED` = {}". \
+        update_query = 'UPDATE `match_status` SET `home_team_score` = {}, ' \
+                       '`visitor_team_score` = {}, `last_updated` = "{}", `CHANGED` = {} WHERE `match_id` > 0'. \
             format(match_status["home_team_score"], match_status["visitor_team_score"], datetime.now(), True)
-    insert_to_DB(update_query)
+        insert_to_DB(update_query)
 
 
 match_details = {"match_id": 10, "home_team": "sokor", "visitor_team": "sho3la",
