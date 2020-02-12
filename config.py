@@ -1,11 +1,14 @@
-# connection = pymysql.connect(
-#     host="localhost",
-#     user="root",
-#     password="MyNewPass",
-#     db="sql_intro",
-#     charset="utf8",
-#     cursorclass=pymysql.cursors.DictCursor
-# )
+import pymysql
+
+connection = pymysql.connect(
+    host="localhost",
+    user="root",
+    password="root",
+    db="league",
+    charset="utf8",
+    cursorclass=pymysql.cursors.DictCursor
+)
+
 
 port_number = 5002
 TOKEN = '1090954125:AAHA-WX4zsCnVr9pcm2nRXuwuuXDqaM1cQA'
