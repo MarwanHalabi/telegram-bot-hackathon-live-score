@@ -1,6 +1,10 @@
+import threading
+import time
+
 from flask import Flask, request, Response
 from Message import *
 import Bot
+from Models import API_model
 
 app = Flask(__name__)
 
@@ -17,7 +21,9 @@ def handle_message():
 
 if __name__ == '__main__':
     app.run(port=port_number)
-
+    Bot.send_game_data()
+    # time.sleep(10)
+    # API_model.get_live_score()
 
 # from flask import Flask
 #
