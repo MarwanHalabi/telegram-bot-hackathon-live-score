@@ -33,8 +33,10 @@ def add_match_status():
     pass
 
 
-def get_active_matches():
-    query = "SELECT * FROM `matches` WHERE `start_time` < '{}' and `match_status` = '{}'".format(datetime.now, 0)
+def get_live_matches():
+    query = 'SELECT * FROM `matches` WHERE `start_time` < "{}" AND `match_status` = {} AND EXISTS (' \
+            'SELECT 1 from `match_subscription` where `match_subscription`.`match_id` = `matches`.`match_id`) ' \
+            ''.format(datetime.now().strftime('%Y-%m-%d %H:%M:%S'), 0)
     return get_data_from_DB(query)
 
 
@@ -55,4 +57,4 @@ match_details = {"match_id": 10, "home_team": "sokor", "visitor_team": "sho3la",
 
 # add_matches(match_details)
 #get_today_matches()
-get_active_matches()
+print(get_live_matches())

@@ -128,7 +128,7 @@ def get_today_games(day_date: date = date.today().strftime("%y-%m-%d")):
 
 
 def get_live_score():
-    live_games = Matches_model.get_live()
+    live_games = Matches_model.get_live_matches()
     if live_games and live_games.len():
         api_response = requests.get('https://api-nba-v1.p.rapidapi.com/games/live/')
         if api_response.status_code == 200:
@@ -139,7 +139,4 @@ def get_live_score():
             game_result = {"match_id": game["gameId"], "last_updated": datetime.now(),
                            "home_team_score": game["hTeam"]["score"]["points"],
                            "visitor_team_score": game["vTeam"]["score"]["points"]}
-            Matches_model.update_result(game_result)
-            print(game_result)
-
-
+            Matches_model.update_score(game_result)
