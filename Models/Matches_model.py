@@ -9,7 +9,6 @@ def add_match(match_details):
         match_details["start_time"],
         match_details["day_date"],
         match_details["match_status"])
-    print(query)
     insert_to_DB(query)
 
 
@@ -20,13 +19,12 @@ def get_today_matches():
 
 
 def add_match_subscription(match_id, user_id):
-    query = "insert into match_subscription (user_id,match_id) values ({},{})".format(user_id, match_id)
-    print(query)
+    query = "insert into match_subscription (user_id,match_id) values ({},{})".format(int(user_id), int(match_id))
     insert_to_DB(query)
 
 
 def remove_match_subscription(match_id, user_id):
-    query = "delete from match_subscription where match_subscription.user_id = {} and match_subscription.match_id = {}".format(user_id,match_id)
+    query = "delete from match_subscription where match_subscription.user_id = {} and match_subscription.match_id = {}".format(int(user_id), int(match_id))
     insert_to_DB(query)
 
 
@@ -68,24 +66,3 @@ def update_score(match_status):
     insert_to_DB(update_query)
 
 
-match_details = {"match_id": 10, "home_team": "sokor", "visitor_team": "sho3la",
-                 "start_time": datetime.today().strftime('%Y-%m-%d %H:%M'),
-                 "day_date": datetime.today().strftime('%Y-%m-%d'), "match_status": 0}
-
-
-# add_matches(match_details)
-#get_today_matches()
-print(get_live_matches())
-
-match_details2 = {"match_id": 40, "home_team": "Wathba", "visitor_team": "Al_sa7a",
-                  "start_time": "2020-02-12 20:30:30",
-                  "day_date": datetime.today().strftime('%Y-%m-%d'), "match_status": 0}
-
-# print(match_details2)
-
-# add_match(match_details2)
-# add_match(match_details)
-# add_match_subscription(10, 50)
-# add_match_subscription(10, 100)
-# add_match_subscription(40,30)
-print(get_subscription_list())
