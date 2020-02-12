@@ -1,3 +1,5 @@
+import pymysql
+
 from config import connection
 
 
@@ -6,8 +8,9 @@ def insert_to_DB(query):
         with connection.cursor() as cursor:
             cursor.execute(query)
             connection.commit()
-    except:
-        print("Error,Could not insert to database")
+    except pymysql.DatabaseError as err:
+        print("Insert record Error", err)
+        return False
 
 
 def delete_from_DB(query):
