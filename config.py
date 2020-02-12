@@ -21,6 +21,6 @@ list_of_matches_msg = "id<123> BHC vs RMA\nid<432> INR vs IMC\nid<432> ROM vs NF
 
 subscribe = "you just subscribed to {} match"
 
-
-def subscribe_msg(match_id):
-    return subscribe.format(match_id)
+list_of_matches = [{"match_id": "123", "home_team": "name1", "visitor_team": "team2", "start_time": "11/12/2020 12:00"}
+    , {"match_id": "456", "home_team": "Al sokor", "visitor_team": "Al saha", "start_time": "11/12/2020 15:00"}
+    , {"match_id": "111", "home_team": "Roma", "visitor_team": "Milan", "start_time": "11/12/2020 15:00"}]
