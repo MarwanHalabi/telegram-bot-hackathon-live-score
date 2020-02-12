@@ -70,193 +70,6 @@ def get_subscription_list():
 
 
 def get_live_matches():
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    
     query = 'SELECT * FROM `matches` WHERE `start_time` < "{}" AND `match_status` = {} AND EXISTS (' \
             'SELECT 1 from `match_subscription` where `match_subscription`.`match_id` = `matches`.`match_id`) ' \
             ''.format(datetime.now().strftime('%Y-%m-%d %H:%M:%S'), 0)
@@ -273,6 +86,63 @@ def update_score(match_status):
             format(match_status["home_team_score"], match_status["visitor_team_score"], datetime.now(), True)
         insert_to_DB(update_query)
 
+
+def add_team(team_details):
+    query = "INSERT INTO Teams(team_id,team_name,team_nickname,team_logo) values ({},\"{}\",\"{}\",\"{}\")".format(
+        team_details["team_id"], team_details["team_name"], team_details["team_nickname"], team_details["team_logo"])
+    insert_to_DB(query)
+
+
+def get_teams():
+    query = "Select team_name,team_nickname,team_logo from teams"
+    return get_data_from_DB(query)
+
+
+def add_to_favorite(user_id, team_list):
+    for team in team_list:
+        query = "INSERT INTO favorite_teams(team_name,user_id) VALUES (\"{}\",{})".format(team, user_id)
+        insert_to_DB(query)
+
+
+def remove_from_favorite(user_id, team_list):
+    for team in team_list:
+        query = "DELETE FROM favorite_teams WHERE team_name = \"{}\" and user_id = {}".format(team, user_id)
+        delete_from_DB(query)
+
+
+def get_user_favorite(user_id):
+    teams_list = []
+    query = "SELECT team_name FROM favorite_teams WHERE user_id = {}".format(user_id)
+    teams = get_data_from_DB(query)
+    for team in teams:
+        teams_list.append(team["team_name"])
+    return teams_list
+
+
+def get_team_subscribers(team_name):
+    users_id_list = []
+    query = "SELECT user_id FROM favorite_teams WHERE team_name = \"{}\"".format(team_name)
+    users =  get_data_from_DB(query)
+    for user in users:
+        users_id_list.append(user["user_id"])
+    return users_id_list
+
+
+
+
+
+team_details = {"team_id": 10, "team_name": "sokor", "team_nickname": "sok", "team_logo": "http://sdncj.png"}
+team_details1 = {"team_id": 20, "team_name": "wthba", "team_nickname": "sok", "team_logo": "http://sdncj.png"}
+team_details2 = {"team_id": 30, "team_name": "sho3la", "team_nickname": "sok", "team_logo": "http://sdncj.png"}
+
+#add_to_favorite(1, ["sokor", "wthba"])
+#add_to_favorite(2, ["sho3la", "sokor"])
+#add_to_favorite(3, ["wthba", "sho3la"])
+
+#remove_from_favorite(1,["sokor"])
+#remove_from_favorite(2,["sho3la"])
+
+print(get_team_subscribers("sho3la"))
 
 match_details = {"match_id": 10, "home_team": "sokor", "visitor_team": "sho3la",
                  "start_time": datetime.today().strftime('%Y-%m-%d %H:%M'),
