@@ -1,16 +1,14 @@
-
 from datetime import datetime
-
-import requests
+import sched
+import time
 
 import Message
 from Models import Matches_model
-from config import *
+from config import TOKEN
 
 
-def open_tele():
-    requests.get(TELEGRAM_INIT_WEBHOOK_URL)
-
+score_counter = 18;
+s = sched.scheduler(time.time, time.sleep)
 
 
 def send_game_data():
@@ -18,11 +16,11 @@ def send_game_data():
     for match in active_matches:
         score = match["home_team"] + ": " + str(match["home_team_score"]) + ", " + match["visitor_team"] + ": " + str(match["visitor_team_score"])
         for user in match["users"]:
-            print("here" + str(user))
             Message.parseSend(TOKEN, str(user), score)
+    print("here send")
+    s.enter(30, 1, send_game_data, ())
 
 
-score_counter = 18;
 def alter_data():
     global score_counter
     game_result = {"match_id": 1, "last_updated": datetime.now(),
@@ -30,3 +28,10 @@ def alter_data():
                    "visitor_team_score": 2}
     Matches_model.update_score(game_result)
     score_counter += 2
+    print("here alter")
+    s.enter(30, 1, alter_data, ())
+
+
+s.enter(0, 1, alter_data, ())
+s.enter(10, 1, send_game_data, ())
+s.run()

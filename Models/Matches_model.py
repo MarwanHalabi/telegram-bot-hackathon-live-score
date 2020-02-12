@@ -30,7 +30,6 @@ def remove_match_subscription(match_id, user_id):
 
 
 def get_subscription_list():
-    print("here")
     lis_of_match_details = []
     match_sub = {}
     current_date = datetime.today().strftime('%Y-%m-%d %H:%M:%S')
