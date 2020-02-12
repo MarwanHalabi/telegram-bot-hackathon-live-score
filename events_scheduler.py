@@ -2,10 +2,11 @@ from datetime import datetime
 import sched
 import time
 import Message
-from Models import Matches_model
+from Models import Matches_model, API_model
 from config import TOKEN
 
 
+API_model.get_today_games()
 score_counter = 18;
 s = sched.scheduler(time.time, time.sleep)
 
