@@ -16,7 +16,7 @@ def send_game_data():
     active_matches = Matches_model.get_subscription_list()
     for match in active_matches:
         score = match["home_team"] + ": " + match["home_team_score"] + ", " + match["visitor_team"] + ": " + match["visitor_team_score"]
-        for user in match["users_list"]:
+        for user in match["users"]:
             Message.parse(TOKEN, user, score)
 
 
