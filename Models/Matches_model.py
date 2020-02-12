@@ -33,6 +33,22 @@ def add_match_status():
     pass
 
 
+def get_active_matches():
+    query = "SELECT * FROM `matches` WHERE `start_time` < '{}' and `match_status` = '{}'".format(datetime.now, 0)
+    return get_data_from_DB(query)
+
+
+def update_score(match_status):
+    query = "SELECT * FROM match_status WHERE match_id = {}".format(match_status["match_id"])
+    result = get_data_from_DB(query)
+    if result["home_team_score"] != match_status["home_team_score"] \
+            or result["visitor_team_score"] != match_status["visitor_team_score"]:
+        update_query = "UPDATE `match_status` SET `home_team_score` = '{}', " \
+                       "`visitor_team_score` = '{}', `last_updated` = {}, `CHANGED` = {}".\
+            format(match_status["home_team_score"], match_status["visitor_team_score"], datetime.now(), True)
+    insert_to_DB(update_query)
+
+
 match_details = {"match_id": 10, "home_team": "sokor", "visitor_team": "sho3la",
                  "start_time": datetime.today().strftime('%Y-%m-%d %H:%M:%S'),
                  "day_date": datetime.today().strftime('%Y-%m-%d'), "match_status": 0}
