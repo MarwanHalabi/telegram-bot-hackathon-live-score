@@ -1,4 +1,3 @@
-import threading
 from datetime import datetime, date
 import requests
 from Models import Matches_model
@@ -129,7 +128,6 @@ def get_today_games(day_date: date = date.today().strftime("%y-%m-%d")):
 
 
 def get_live_score():
-    threading.Timer(30, get_live_score).start()
     live_games = Matches_model.get_live_matches()
     if live_games and live_games.len():
         api_response = requests.get('https://api-nba-v1.p.rapidapi.com/games/live/')
