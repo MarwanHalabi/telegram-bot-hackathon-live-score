@@ -50,9 +50,32 @@ def get_subscription_list():
 
 
 
+def get_live_matches():
+    query = 'SELECT * FROM `matches` WHERE `start_time` < "{}" AND `match_status` = {} AND EXISTS (' \
+            'SELECT 1 from `match_subscription` where `match_subscription`.`match_id` = `matches`.`match_id`) ' \
+            ''.format(datetime.now().strftime('%Y-%m-%d %H:%M:%S'), 0)
+    return get_data_from_DB(query)
+
+
+def update_score(match_status):
+    query = "SELECT * FROM match_status WHERE match_id = {}".format(match_status["match_id"])
+    result = get_data_from_DB(query)
+    if result["home_team_score"] != match_status["home_team_score"] \
+            or result["visitor_team_score"] != match_status["visitor_team_score"]:
+        update_query = "UPDATE `match_status` SET `home_team_score` = '{}', " \
+                       "`visitor_team_score` = '{}', `last_updated` = {}, `CHANGED` = {}".\
+            format(match_status["home_team_score"], match_status["visitor_team_score"], datetime.now(), True)
+    insert_to_DB(update_query)
+
+
 match_details = {"match_id": 10, "home_team": "sokor", "visitor_team": "sho3la",
                  "start_time": datetime.today().strftime('%Y-%m-%d %H:%M'),
                  "day_date": datetime.today().strftime('%Y-%m-%d'), "match_status": 0}
+
+
+# add_matches(match_details)
+#get_today_matches()
+print(get_live_matches())
 
 match_details2 = {"match_id": 40, "home_team": "Wathba", "visitor_team": "Al_sa7a",
                   "start_time": "2020-02-12 20:30:30",
