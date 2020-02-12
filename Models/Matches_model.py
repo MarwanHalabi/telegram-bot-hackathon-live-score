@@ -54,4 +54,5 @@ match_details = {"match_id": 10, "home_team": "sokor", "visitor_team": "sho3la",
                  "day_date": datetime.today().strftime('%Y-%m-%d'), "match_status": 0}
 
 # add_matches(match_details)
-get_today_matches()
+#get_today_matches()
+get_active_matches()
