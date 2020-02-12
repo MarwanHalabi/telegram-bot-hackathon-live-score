@@ -26,11 +26,13 @@ def add_match_subscription(match_id, user_id):
 
 
 def remove_match_subscription(match_id, user_id):
-    query = "delete from match_subscription where match_subscription.user_id = {} and match_subscription.match_id = {}".format(user_id,match_id)
+    query = "delete from match_subscription where match_subscription.user_id = {} and match_subscription.match_id = {}".format(
+        user_id, match_id)
     insert_to_DB(query)
 
 
 def get_subscription_list():
+    lis_of_match_details = []
     match_sub = {}
     current_date = datetime.today().strftime('%Y-%m-%d %H:%M:%S')
     get_id_query = "select match_subscription.match_id from match_subscription,matches where matches.start_time <= \"{}\" " \
@@ -38,16 +40,29 @@ def get_subscription_list():
         current_date)
     live_matches = get_data_from_DB(get_id_query)
     for match in live_matches:
+        match_sub["match_id"] = match["match_id"]
+
+        match_details_query = "select matches.home_team,matches.visitor_team,match_status.home_team_score,match_status.visitor_team_score FROM" \
+                              " matches, match_status WHERE matches.match_id = {}  AND match_status.match_id = {}".format(
+            match["match_id"], match["match_id"])
+
+        match_details = get_data_from_DB(match_details_query)
+
+        for matches in match_details:
+            match_sub["home_team"] = matches["home_team"]
+            match_sub["visitor_team"] = matches["visitor_team"]
+            match_sub["home_team_score"] = matches["home_team_score"]
+            match_sub["visitor_team_score"] = matches["visitor_team_score"]
+
         users_list = []
-        get_users_query = "SELECT match_subscription.user_id from match_subscription WHERE match_subscription.match_id =  \"{}\"".format(
-            match["match_id"])
+        get_users_query = "SELECT match_subscription.user_id from match_subscription WHERE match_subscription.match_id = {}".format(match["match_id"])
+
         users = get_data_from_DB(get_users_query)
         for user in users:
             users_list.append(user["user_id"])
-        match_sub[match["match_id"]] = users_list
-
-    return match_sub
-
+        match_sub["users"] = users_list
+        lis_of_match_details.append(match_sub)
+    return lis_of_match_details
 
 
 def get_live_matches():
@@ -63,7 +78,7 @@ def update_score(match_status):
     if result["home_team_score"] != match_status["home_team_score"] \
             or result["visitor_team_score"] != match_status["visitor_team_score"]:
         update_query = "UPDATE `match_status` SET `home_team_score` = '{}', " \
-                       "`visitor_team_score` = '{}', `last_updated` = {}, `CHANGED` = {}".\
+                       "`visitor_team_score` = '{}', `last_updated` = {}, `CHANGED` = {}". \
             format(match_status["home_team_score"], match_status["visitor_team_score"], datetime.now(), True)
     insert_to_DB(update_query)
 
@@ -72,15 +87,15 @@ match_details = {"match_id": 10, "home_team": "sokor", "visitor_team": "sho3la",
                  "start_time": datetime.today().strftime('%Y-%m-%d %H:%M'),
                  "day_date": datetime.today().strftime('%Y-%m-%d'), "match_status": 0}
 
-
 # add_matches(match_details)
-#get_today_matches()
-print(get_live_matches())
+# get_today_matches()
+
 
 match_details2 = {"match_id": 40, "home_team": "Wathba", "visitor_team": "Al_sa7a",
                   "start_time": "2020-02-12 20:30:30",
                   "day_date": datetime.today().strftime('%Y-%m-%d'), "match_status": 0}
 
+# get_today_matches()
 # print(match_details2)
 
 # add_match(match_details2)
