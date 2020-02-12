@@ -1,19 +1,27 @@
 use league;
 
 
+/*DROP TABLE match_subscription;*/
+/*DROP TABLE match_status;*/
+/*DROP TABLE matches;*/
 
-create table today_matches(
+
+
+create table matches(
     match_id int not null primary key,
-    team_one varchar(50),
-    team_two varchar(50),
-    start_time datetime
+    home_team varchar(50),
+    visitor_team varchar(50),
+    start_time DATETIME,
+    day_date DATE,
+    match_status int
 );
 
 create table match_status(
     match_id int not null primary key,
-    team_one_score int default 0,
-    team_two_score int  default 0,
+    home_team_score int default 0,
+    visitor_team_score int  default 0,
     last_updated datetime,
+    CHANGED BOOLEAN,
     FOREIGN KEY(match_id) REFERENCES today_matches(match_id)
 );
 
