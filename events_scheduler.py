@@ -1,7 +1,6 @@
 from datetime import datetime
 import sched
 import time
-
 import Message
 from Models import Matches_model
 from config import TOKEN
@@ -16,6 +15,7 @@ def send_game_data():
     for match in active_matches:
         score = match["home_team"] + ": " + str(match["home_team_score"]) + ", " + match["visitor_team"] + ": " + str(match["visitor_team_score"])
         for user in match["users"]:
+            print(str(user) + " " + str(match["match_id"]))
             Message.parseSend(TOKEN, str(user), score)
     print("here send")
     s.enter(30, 1, send_game_data, ())
@@ -26,6 +26,10 @@ def alter_data():
     game_result = {"match_id": 1, "last_updated": datetime.now(),
                    "home_team_score": score_counter,
                    "visitor_team_score": 2}
+    Matches_model.update_score(game_result)
+    game_result = {"match_id": 2, "last_updated": datetime.now(),
+                   "home_team_score": (score_counter + 4),
+                   "visitor_team_score": 6}
     Matches_model.update_score(game_result)
     score_counter += 2
     print("here alter")
