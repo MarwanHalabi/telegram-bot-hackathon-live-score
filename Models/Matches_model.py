@@ -1,19 +1,23 @@
 from Models.sql_helper import insert_to_DB, delete_from_DB, get_data_from_DB
-from datetime import datetime
+from datetime import datetime, date
 
 
 def add_match(match_details):
-    query = "insert into matches (match_id,home_team,visitor_team,start_time,day_date,match_status) values ({},\"{}\",\"{}\",\"{}\",\"{}\",{})".format(
+    query = "insert into matches (match_id,home_team,visitor_team,start_time,day_date,match_status) " \
+            "values ({},\"{}\",\"{}\",\"{}\",\"{}\",{})".format(
         match_details["match_id"], match_details["home_team"],
         match_details["visitor_team"],
         match_details["start_time"],
         match_details["day_date"],
         match_details["match_status"])
     insert_to_DB(query)
+    status_query = 'insert into match_status (match_id, home_team_score, visitor_team_score, last_updated, `CHANGED`)' \
+                   ' VALUES ({},{},{},"{}",{})'.format(match_details["match_id"], 0, 0, datetime.now(), 0)
+    insert_to_DB(status_query)
 
 
-def get_today_matches():
-    today_date = datetime.today().strftime('%Y-%m-%d')
+def get_today_matches(today_date: date = date.today().strftime("%Y-%m-%d")):
+    # today_date = datetime.today().strftime('%Y-%m-%d')
     query = "select match_id,home_team,visitor_team,start_time from matches where day_date = \"{}\"".format(today_date)
     return get_data_from_DB(query)
 
@@ -82,9 +86,9 @@ def update_score(match_status):
             or str(result["visitor_team_score"]) != str(match_status["visitor_team_score"]):
         update_query = 'UPDATE `match_status` SET `home_team_score` = {}, ' \
                        '`visitor_team_score` = {}, `last_updated` = "{}", `CHANGED` = {} WHERE `match_id` = {}'. \
-            format(match_status["home_team_score"], match_status["visitor_team_score"], datetime.now(), True, match_status["match_id"])
+            format(match_status["home_team_score"], match_status["visitor_team_score"], datetime.now(), True,
+                   match_status["match_id"])
         insert_to_DB(update_query)
-
 
 
 def add_team(team_details):
@@ -132,7 +136,7 @@ print(get_user_matches(818771304))
 def get_team_subscribers(team_name):
     users_id_list = []
     query = "SELECT user_id FROM favorite_teams WHERE team_name = \"{}\"".format(team_name)
-    users =  get_data_from_DB(query)
+    users = get_data_from_DB(query)
     for user in users:
         users_id_list.append(user["user_id"])
     return users_id_list
