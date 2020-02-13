@@ -1,19 +1,23 @@
 from Models.sql_helper import insert_to_DB, delete_from_DB, get_data_from_DB
-from datetime import datetime
+from datetime import datetime, date
 
 
 def add_match(match_details):
-    query = "insert into matches (match_id,home_team,visitor_team,start_time,day_date,match_status) values ({},\"{}\",\"{}\",\"{}\",\"{}\",{})".format(
+    query = "insert into matches (match_id,home_team,visitor_team,start_time,day_date,match_status) " \
+            "values ({},\"{}\",\"{}\",\"{}\",\"{}\",{})".format(
         match_details["match_id"], match_details["home_team"],
         match_details["visitor_team"],
         match_details["start_time"],
         match_details["day_date"],
         match_details["match_status"])
     insert_to_DB(query)
+    status_query = 'insert into match_status (match_id, home_team_score, visitor_team_score, last_updated, `CHANGED`)' \
+                   ' VALUES ({},{},{},"{}",{})'.format(match_details["match_id"], 0, 0, datetime.now(), 0)
+    insert_to_DB(status_query)
 
 
-def get_today_matches():
-    today_date = datetime.today().strftime('%Y-%m-%d')
+def get_today_matches(today_date: date = date.today().strftime("%Y-%m-%d")):
+    # today_date = datetime.today().strftime('%Y-%m-%d')
     query = "select match_id,home_team,visitor_team,start_time from matches where day_date = \"{}\"".format(today_date)
     return get_data_from_DB(query)
 
@@ -87,8 +91,8 @@ print(send_final_score(10))
 def update_score(match_status):
     query = "SELECT * FROM match_status WHERE match_id = {}".format(match_status["match_id"])
     result = get_data_from_DB(query)[0]
-    if result["home_team_score"] != match_status["home_team_score"] \
-            or result["visitor_team_score"] != match_status["visitor_team_score"]:
+    if str(result["home_team_score"]) != str(match_status["home_team_score"]) \
+            or str(result["visitor_team_score"]) != str(match_status["visitor_team_score"]):
         update_query = 'UPDATE `match_status` SET `home_team_score` = {}, ' \
                        '`visitor_team_score` = {}, `last_updated` = "{}", `CHANGED` = {} WHERE `match_id` = {}'. \
             format(match_status["home_team_score"], match_status["visitor_team_score"], datetime.now(), True,
@@ -128,6 +132,16 @@ def get_user_favorite(user_id):
     return teams_list
 
 
+def get_user_matches(user_id):
+    query = "select matches.match_id,matches.home_team,matches.visitor_team,matches.start_time,matches.day_date " \
+            "FROM matches,match_subscription " \
+            "where match_subscription.user_id = {} and matches.match_id = match_subscription.match_id".format(user_id)
+    return get_data_from_DB(query)
+
+
+print(get_user_matches(818771304))
+
+
 def get_team_subscribers(team_name):
     users_id_list = []
     query = "SELECT user_id FROM favorite_teams WHERE team_name = \"{}\"".format(team_name)
@@ -136,39 +150,3 @@ def get_team_subscribers(team_name):
         users_id_list.append(user["user_id"])
     return users_id_list
 
-
-'''
-team_details = {"team_id": 10, "team_name": "sokor", "team_nickname": "sok", "team_logo": "http://sdncj.png"}
-team_details1 = {"team_id": 20, "team_name": "wthba", "team_nickname": "sok", "team_logo": "http://sdncj.png"}
-team_details2 = {"team_id": 30, "team_name": "sho3la", "team_nickname": "sok", "team_logo": "http://sdncj.png"}
-
-#add_to_favorite(1, ["sokor", "wthba"])
-#add_to_favorite(2, ["sho3la", "sokor"])
-#add_to_favorite(3, ["wthba", "sho3la"])
-
-#remove_from_favorite(1,["sokor"])
-#remove_from_favorite(2,["sho3la"])
-
-print(get_team_subscribers("sho3la"))
-
-match_details = {"match_id": 10, "home_team": "sokor", "visitor_team": "sho3la",
-                 "start_time": datetime.today().strftime('%Y-%m-%d %H:%M'),
-                 "day_date": datetime.today().strftime('%Y-%m-%d'), "match_status": 0}
-
-# add_matches(match_details)
-# get_today_matches()
-
-
-match_details2 = {"match_id": 40, "home_team": "Wathba", "visitor_team": "Al_sa7a",
-                  "start_time": "2020-02-12 20:30:30",
-                  "day_date": datetime.today().strftime('%Y-%m-%d'), "match_status": 0}
-'''
-# get_today_matches()
-# print(match_details2)
-
-# add_match(match_details2)
-# add_match(match_details)
-# add_match_subscription(10, 50)
-# add_match_subscription(10, 100)
-# add_match_subscription(40,30)
-# print(get_subscription_list())

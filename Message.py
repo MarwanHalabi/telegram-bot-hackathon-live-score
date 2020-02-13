@@ -1,10 +1,9 @@
+#!/usr/bin/python3
+
 from config import *
 import requests
-from Models import Matches_model
-
-
-
-# import telegram
+from Models import Matches_model, API_model
+from telegram import ReplyKeyboardMarkup
 
 
 def message(user_message):
@@ -14,18 +13,17 @@ def message(user_message):
         command = messageL[0]
         user_id = user_message['chat']['id']
         print(user_id)
-        if command == "/start":
+        if command == "start":
+            x = ReplyKeyboardMarkup(keyboard, one_time_keyboard=True, resize_keyboard=True)
+            requests.get("https://api.telegram.org/bot{}/sendMessage?chat_id={}&text={}&reply_markup={}"
+                         .format(TOKEN, user_id, "please choose your selection", x.to_json()))
+
+        if command.lower().startswith("hi") or command == "/start":
             parse(TOKEN, user_message, start_msg)
-        elif command == "/list":
-            print("into list")
+
+        elif command == "List_today_matches":
             list_of_matches = Matches_model.get_today_matches()
             parse(TOKEN, user_message, match_show(list_of_matches))
-        elif command == "/subscribe":
-            Matches_model.add_match_subscription(messageL[1], user_id)
-            parse(TOKEN, user_message, subscribe_msg(messageL[1]))
-        elif command == "/unsubscribe":
-            Matches_model.remove_match_subscription(messageL[1], user_id)
-            parse(TOKEN, user_message, unsubscribe_msg(messageL[1]))
         elif command == "/list_all_teams":
             list_of_teams = Matches_model.get_teams()
             parse(TOKEN, user_message, teams_show(list_of_teams))
@@ -38,24 +36,47 @@ def message(user_message):
         elif command == "/show_favorite_teams":
             teams_list = Matches_model.get_user_favorite(user_id)
             parse(TOKEN, user_message, fav_teams(teams_list))
-        elif command == "/choose sub type":
-            pass
+        elif command == "subscribe_for_match":
+            listOfMatches = [[str(item['match_id']) + "    " + item["home_team"] + "  VS  " + item["visitor_team"]]
+                             for item in Matches_model.get_today_matches()]
+            x = ReplyKeyboardMarkup(listOfMatches, one_time_keyboard=True, resize_keyboard=True)
+            requests.get("https://api.telegram.org/bot{}/sendMessage?chat_id={}&text={}&reply_markup={}"
+                         .format(TOKEN, user_id, "subscribe to match", x.to_json()))
+
+        elif command == "Unsubscribe":
+            matches = Matches_model.get_user_matches(user_id)
+            listOfMatches = [[str(item['match_id']) + "    " + item["home_team"] + "  Vs  " + item["visitor_team"]]
+                             for item in matches]
+            x = ReplyKeyboardMarkup(listOfMatches, one_time_keyboard=True, resize_keyboard=True)
+            requests.get("https://api.telegram.org/bot{}/sendMessage?chat_id={}&text={}&reply_markup={}"
+                         .format(TOKEN, user_id, "Unsubscribe to match", x.to_json()))
+
+        elif command == "Subscribe_future_matches":
+            x = ReplyKeyboardMarkup(this_week, one_time_keyboard=True, resize_keyboard=True)
+            requests.get("https://api.telegram.org/bot{}/sendMessage?chat_id={}&text={}&reply_markup={}"
+                         .format(TOKEN, user_id, "Unsubscribe to match", x.to_json()))
+
+        elif len(command.split("-")) == 3:
+            API_model.get_today_games(command)
+            listOfMatches = [[str(item['match_id']) + "    " + item["home_team"] + "  VS  " + item["visitor_team"]]
+                             for item in Matches_model.get_today_matches(command)]
+            x = ReplyKeyboardMarkup(listOfMatches, one_time_keyboard=True, resize_keyboard=True)
+            requests.get("https://api.telegram.org/bot{}/sendMessage?chat_id={}&text={}&reply_markup={}"
+                         .format(TOKEN, user_id, "subscribe to match", x.to_json()))
+
+        elif command == "Help\U00002753":
+            parse(TOKEN, user_message, help)
+
+        elif "VS" in messageL:
+            parse(TOKEN, user_message, subscribe_msg(messageL[0]))
+            Matches_model.add_match_subscription(messageL[0], user_id)
+
+        elif "Vs" in messageL:
+            Matches_model.remove_match_subscription(messageL[0], user_id)
+            parse(TOKEN, user_message, unsubscribe_msg(messageL[0]))
+
     except:
         pass
-
-
-
-
-
-# def UI():
-#     button_list = [
-#         InlineKeyboardButton("col1", callback_data=...),
-#         InlineKeyboardButton("col2", callback_data=...),
-#         InlineKeyboardButton("row 2", callback_data=...)
-#     ]
-#     reply_markup = InlineKeyboardMarkup(util.build_menu(button_list, n_cols=2))
-#     bot.send_message(..., "A two-column menu", reply_markup=reply_markup)
-
 
 def parse(token, user_message, parse_input):
     res = requests.get(
@@ -104,11 +125,5 @@ def teams_show(list_of_teams: list):
 
 
 def make_match(item: dict):
-    return str(item["match_id"]) + "    " + item["home_team"] + "  VS  " + item["visitor_team"] \
-           + "   start time: " + item["start_time"].strftime("%m/%d/%Y, %H:%M:%S") + "\n"
-
-# commands = {
-#     "/start": parse
-#     , "/list": parse
-#     , "/subscribe": parse
-# }
+    return "Game: " + str(item["match_id"]) + "\n" + item["home_team"] + "   \U0001F19A   " + item["visitor_team"] \
+           + "\n" + "start at: " + item["start_time"].strftime("%H:%M") + "\n\n"

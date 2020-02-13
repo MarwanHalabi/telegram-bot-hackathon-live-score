@@ -1,6 +1,7 @@
 from datetime import datetime, date
 import requests
 from Models import Matches_model
+import dateutil.parser
 
 # json_response = {"api": {"status": 200, "message": "GET games\/date\/2020-02-13", "results": 11,
 #                          "filters": ["seasonYear", "league", "gameId", "teamId", "date", "live"], "games": [
@@ -115,28 +116,33 @@ from Models import Matches_model
 #                    "score": {"points": ""}}}]}}
 
 
-def get_today_games(day_date: date = date.today().strftime("%y-%m-%d")):
-    api_response = requests.get('https://api-nba-v1.p.rapidapi.com/games/date/{}'.format(day_date))
+def get_today_games(day_date: date = date.today().strftime("%Y-%m-%d")):
+    api_response = requests.get('https://api-nba-v1.p.rapidapi.com/games/date/{}'.format(day_date),
+                                headers={"x-rapidapi-host": "api-nba-v1.p.rapidapi.com",
+                                         "x-rapidapi-key": "5c516b2a70msh137afc3cb1fbc89p1b4a45jsndc2d8a4ec944"})
     if api_response.status_code == 200:
         json_response = api_response.json()
-    games_response = json_response["api"]["games"]
-    for game in games_response:
-        game_details = {"home_team": game["hTeam"]["fullName"], "visitor_team": game['vTeam']["fullName"],
-                        "start_time": game["startTimeUTC"], "match_id": game["gameId"],
-                        "day_date": datetime.date()}
-        Matches_model.add_match(game_details)
+        games_response = json_response["api"]["games"]
+        for game in games_response:
+            game_details = {"home_team": game["hTeam"]["fullName"], "visitor_team": game['vTeam']["fullName"],
+                            "start_time": dateutil.parser.parse(game["startTimeUTC"]).strftime("%Y-%m-%d %H:%M:%S"), "match_id": game["gameId"],
+                            "day_date": dateutil.parser.parse(game["startTimeUTC"]).strftime("%Y-%m-%d"), "match_status": 0}
+            Matches_model.add_match(game_details)
 
 
 def get_live_score():
     live_games = Matches_model.get_live_matches()
-    if live_games and live_games.len():
-        api_response = requests.get('https://api-nba-v1.p.rapidapi.com/games/live/')
+    if live_games and len(live_games):
+        api_response = requests.get('https://api-nba-v1.p.rapidapi.com/games/live/',
+                                headers={"x-rapidapi-host": "api-nba-v1.p.rapidapi.com",
+                                         "x-rapidapi-key": "5c516b2a70msh137afc3cb1fbc89p1b4a45jsndc2d8a4ec944"})
         if api_response.status_code == 200:
             json_response = api_response.json()
     games_response = json_response["api"]["games"]
     for game in games_response:
-        if game['game_id'] in live_games:
-            game_result = {"match_id": game["gameId"], "last_updated": datetime.now(),
-                           "home_team_score": game["hTeam"]["score"]["points"],
-                           "visitor_team_score": game["vTeam"]["score"]["points"]}
-            Matches_model.update_score(game_result)
+        for curr_game in live_games:
+            if str(game['gameId']) == str(curr_game['match_id']):
+                game_result = {"match_id": game["gameId"], "last_updated": datetime.now(),
+                               "home_team_score": game["hTeam"]["score"]["points"],
+                               "visitor_team_score": game["vTeam"]["score"]["points"]}
+                Matches_model.update_score(game_result)

@@ -1,32 +1,43 @@
 import pymysql
-import telepot
+import datetime
 
 connection = pymysql.connect(
     host="localhost",
     user="root",
-    password="root",
+    password="Mh081263",
     db="league",
     charset="utf8",
     cursorclass=pymysql.cursors.DictCursor
 )
 
+keyboard = [
+    ["List_today_matches"], ["subscribe_for_match"],["Subscribe_future_matches"], ["Unsubscribe"], ["Mute\U0001F6AB"]
+    , ["Help\U00002753"], ["Cancel"]
+]
 
+this_week = [[str((datetime.datetime.today() + datetime.timedelta(days=i)))[0:10]]for i in range(7)]
+
+print(this_week)
 port_number = 5002
-TOKEN = '1053257269:AAG_B9dQkWJFdI-1pDBlLSyScS9Y2QHHwIM'
-bot = telepot.Bot(TOKEN)
-TELEGRAM_INIT_WEBHOOK_URL = 'https://api.telegram.org/bot{}/setWebhook?url=https://5c44d37a.ngrok.io/message' \
+
+TOKEN = '1090092876:AAFsH_CxLromgssfNqHMIVt27uQmqTRD_gA'
+TELEGRAM_INIT_WEBHOOK_URL = 'https://api.telegram.org/bot{}/setWebhook?url=https://dea76ff0.ngrok.io/message' \
     .format(TOKEN)
 
-start_msg = "hello dear user.\n Sport league bot provides you important updates about your favorite matches " \
-            "instantaneously as they occur (live).\nThe bot saves the data about users like favorite teams" \
-            ", subscriptions etc in a database. \nEvery user can talk to the bot and ask for services" \
-            ", by the following commands as described below.\n /list:\n /subscribe {match_id}\n/unsubscribe {match_id}"
+start_msg = "Hi!! I'm Sport Bee \U0001F41D, How are you doing today? \n" \
+            "I'll try to make your live easier by sending you minute by minute updates for game score \n" \
+            "To start just type \"start\"! easy enough right \U0001F609"
 
-# list_of_matches_msg = "id<123> BHC vs RMA\nid<432> INR vs IMC\nid<432> ROM vs NFC"
+help = "Hello, Need help? " \
+       "\ncheck the following commands " \
+       "\n\"Hi\": say hi to me and I'll say it back :) " \
+       "\n\"start\": get a friendly list of my commands instead of typing them" \
+       "\n\"list_all_matches\": Displays all NBA games for today. " \
+       "\n\"Subscribe_for_match\": Enable notifications for a cretain game scores. " \
+       "\n\"Unsubscribe\": disable notifications for a cretain game scores. " \
+       "\n\"Cancel\": exit the services window. "
+
 
 subscribe = "you just subscribed to {} match"
 unsubscribe = "you just unsubscribed to {} match"
 
-list_of_matches = [{"match_id": "123", "home_team": "name1", "visitor_team": "team2", "start_time": "11/12/2020 12:00"}
-    , {"match_id": "456", "home_team": "Al sokor", "visitor_team": "Al saha", "start_time": "11/12/2020 15:00"}
-    , {"match_id": "111", "home_team": "Roma", "visitor_team": "Milan", "start_time": "11/12/2020 15:00"}]
