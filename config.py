@@ -31,7 +31,6 @@ help = "Hello, Need help? " \
        "\n\"Unsubscribe\": disable notifications for a cretain game scores. " \
        "\n\"Cancel\": exit the services window. "
 
-# list_of_matches_msg = "id<123> BHC vs RMA\nid<432> INR vs IMC\nid<432> ROM vs NFC"
 
 subscribe = "you just subscribed to {} match"
 unsubscribe = "you just unsubscribed to {} match"
