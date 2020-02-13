@@ -142,6 +142,12 @@ def get_team_subscribers(team_name):
     return users_id_list
 
 
+def end_game(match_id):
+    update_query = 'UPDATE `matches` SET `matches`.`match_status` = {}, ' \
+                   'WHERE `match_id` = {}'.format(match_id)
+    insert_to_DB(update_query)
+
+
 '''
 team_details = {"team_id": 10, "team_name": "sokor", "team_nickname": "sok", "team_logo": "http://sdncj.png"}
 team_details1 = {"team_id": 20, "team_name": "wthba", "team_nickname": "sok", "team_logo": "http://sdncj.png"}
