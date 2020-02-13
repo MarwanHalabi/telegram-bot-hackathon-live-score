@@ -1,5 +1,6 @@
 from Models.sql_helper import insert_to_DB, delete_from_DB, get_data_from_DB
 from datetime import datetime, date
+import Message
 
 
 def add_match(match_details):
@@ -81,12 +82,11 @@ def get_live_matches():
 
 def send_final_score(match_id):
     query = "SELECT favorite_teams.user_id,matches.home_team, matches.visitor_team, match_status.home_team_score, match_status.visitor_team_score, favorite_teams.team_name FROM " \
-            "match_status,matches,favorite_teams WHERE matches.match_id = {} AND match_status.match_id = {} AND favorite_teams.team_name =  matches.home_team" \
-            " OR favorite_teams.team_name = matches.visitor_team".format(match_id, match_id)
+            "match_status,matches,favorite_teams WHERE matches.match_id = {} AND match_status.match_id = matches.match_id AND ( favorite_teams.team_name =  matches.home_team" \
+            " OR favorite_teams.team_name = matches.visitor_team )".format(match_id, match_id)
     print(query)
-    return get_data_from_DB(query)
+    Message.send_final_scores_msg(get_data_from_DB(query))
 
-print(send_final_score(10))
 
 def update_score(match_status):
     query = "SELECT * FROM match_status WHERE match_id = {}".format(match_status["match_id"])
@@ -111,10 +111,9 @@ def get_teams():
     return get_data_from_DB(query)
 
 
-def add_to_favorite(user_id, team_list):
-    for team in team_list:
-        query = "INSERT INTO favorite_teams(team_name,user_id) VALUES (\"{}\",{})".format(team, user_id)
-        insert_to_DB(query)
+def add_to_favorite(user_id, team):
+    query = "INSERT INTO favorite_teams(team_name,user_id) VALUES (\"{}\",{})".format(team, user_id)
+    insert_to_DB(query)
 
 
 def remove_from_favorite(user_id, team_list):
@@ -152,6 +151,6 @@ def get_team_subscribers(team_name):
 
 
 def end_game(match_id):
-    update_query = 'UPDATE `matches` SET `matches`.`match_status` = {}, ' \
-                   'WHERE `match_id` = {}'.format(match_id)
+    update_query = 'UPDATE `matches` SET `matches`.`match_status` = {} ' \
+                   'WHERE `match_id` = {}'.format(1, match_id)
     insert_to_DB(update_query)

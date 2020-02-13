@@ -5,7 +5,7 @@ import Message
 from Models import Matches_model, API_model
 from config import TOKEN
 
-
+# API_model.get_teams()
 s = sched.scheduler(time.time, time.sleep)
 
 

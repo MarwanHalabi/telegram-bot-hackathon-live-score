@@ -11,8 +11,8 @@ connection = pymysql.connect(
 )
 
 keyboard = [
-    ["List_today_matches"], ["subscribe_for_match"],["Subscribe_future_matches"], ["Unsubscribe"], ["Mute\U0001F6AB"]
-    , ["Help\U00002753"], ["Cancel"]
+    ["List today matches"], ["Subscribe for match"],["Subscribe future matches"], ["Unsubscribe"]
+    , ["List all teams"], ["Add to favorite"], ["My favorite teams"], ["Help\U00002753"], ["Cancel"]
 ]
 
 this_week = [[str((datetime.datetime.today() + datetime.timedelta(days=i)))[0:10]]for i in range(7)]
@@ -26,18 +26,20 @@ TELEGRAM_INIT_WEBHOOK_URL = 'https://api.telegram.org/bot{}/setWebhook?url=https
 
 start_msg = "Hi!! I'm Sport Bee \U0001F41D, How are you doing today? \n" \
             "I'll try to make your live easier by sending you minute by minute updates for game score \n" \
-            "To start just type \"start\"! easy enough right \U0001F609"
+            "To start just type \"menu\"! easy enough right \U0001F609"
 
-help = "Hello, Need help? " \
-       "\ncheck the following commands " \
-       "\n\"Hi\": say hi to me and I'll say it back :) " \
-       "\n\"start\": get a friendly list of my commands instead of typing them" \
-       "\n\"list_all_matches\": Displays all NBA games for today. " \
-       "\n\"Subscribe_for_match\": Enable notifications for a cretain game scores. " \
-       "\n\"Unsubscribe\": disable notifications for a cretain game scores. " \
-       "\n\"Cancel\": exit the services window. "
+help = "Hello, Need help? just type \"menu\" and start talking to me" \
+       "\nor else you can check these following commands " \
+       "\n\n- \"Hi\": Say hi to me and I'll say it back \U0001F600 " \
+       "\n\n- \"menu\": Get a friendly list of my commands instead of typing them" \
+       "\n\n- \"List today matches\": Displays all NBA games for today. " \
+       "\n\n- \"Subscribe for match\": Enable notifications for a certain game during the day scores. " \
+       "\n\n- \"Subscribe future matches\": Enable notifications for a game in the next week." \
+       "\n\n- \"Unsubscribe\": Disable notifications for a certain game scores. " \
+       "\n\n- \"List all teams\": Show a list of all teams we track." \
+       "\n\n- \"Add to favorite\": Add a team to your favorite list." \
+       "\n\n- \"Cancel\": Exit the selection list. "
 
 
 subscribe = "you just subscribed to {} match"
 unsubscribe = "you just unsubscribed to {} match"
-
