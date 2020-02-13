@@ -4,15 +4,15 @@ import datetime
 connection = pymysql.connect(
     host="localhost",
     user="root",
-    password="",
+    password="Mh081263",
     db="league",
     charset="utf8",
     cursorclass=pymysql.cursors.DictCursor
 )
 
 keyboard = [
-    ["List_today_matches"], ["subscribe_for_match"],["Subscribe_future_matches"], ["Unsubscribe"], ["Mute"]
-    , ["Help"], ["Cancel"]
+    ["List_today_matches"], ["subscribe_for_match"],["Subscribe_future_matches"], ["Unsubscribe"], ["Mute\U0001F6AB"]
+    , ["Help\U00002753"], ["Cancel"]
 ]
 
 this_week = [[str((datetime.datetime.today() + datetime.timedelta(days=i)))[0:10]]for i in range(7)]

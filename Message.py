@@ -2,7 +2,7 @@
 
 from config import *
 import requests
-from Models import Matches_model
+from Models import Matches_model, API_model
 from telegram import ReplyKeyboardMarkup
 
 
@@ -39,18 +39,28 @@ def message(user_message):
             x = ReplyKeyboardMarkup(listOfMatches, one_time_keyboard=True, resize_keyboard=True)
             requests.get("https://api.telegram.org/bot{}/sendMessage?chat_id={}&text={}&reply_markup={}"
                          .format(TOKEN, user_id, "Unsubscribe to match", x.to_json()))
+
         elif command == "Subscribe_future_matches":
             x = ReplyKeyboardMarkup(this_week, one_time_keyboard=True, resize_keyboard=True)
             requests.get("https://api.telegram.org/bot{}/sendMessage?chat_id={}&text={}&reply_markup={}"
                          .format(TOKEN, user_id, "Unsubscribe to match", x.to_json()))
-        elif command == "Help":
+
+        elif len(command.split("-")) == 3:
+            API_model.get_today_games(command)
+            listOfMatches = [[str(item['match_id']) + "    " + item["home_team"] + "  VS  " + item["visitor_team"]]
+                             for item in Matches_model.get_today_matches(command)]
+            x = ReplyKeyboardMarkup(listOfMatches, one_time_keyboard=True, resize_keyboard=True)
+            requests.get("https://api.telegram.org/bot{}/sendMessage?chat_id={}&text={}&reply_markup={}"
+                         .format(TOKEN, user_id, "subscribe to match", x.to_json()))
+
+        elif command == "Help\U00002753":
             parse(TOKEN, user_message, help)
 
-        elif messageL[3] == "VS":
+        elif "VS" in messageL:
             parse(TOKEN, user_message, subscribe_msg(messageL[0]))
             Matches_model.add_match_subscription(messageL[0], user_id)
 
-        elif messageL[3] == "Vs":
+        elif "Vs" in messageL:
             Matches_model.remove_match_subscription(messageL[0], user_id)
             parse(TOKEN, user_message, unsubscribe_msg(messageL[0]))
 
