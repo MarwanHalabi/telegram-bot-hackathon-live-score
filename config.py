@@ -1,4 +1,5 @@
 import pymysql
+import telepot
 
 connection = pymysql.connect(
     host="localhost",
@@ -11,8 +12,9 @@ connection = pymysql.connect(
 
 
 port_number = 5002
-TOKEN = '1090954125:AAHA-WX4zsCnVr9pcm2nRXuwuuXDqaM1cQA'
-TELEGRAM_INIT_WEBHOOK_URL = 'https://api.telegram.org/bot{}/setWebhook?url=https://55a6e4fa.ngrok.io/message' \
+TOKEN = '1053257269:AAG_B9dQkWJFdI-1pDBlLSyScS9Y2QHHwIM'
+bot = telepot.Bot(TOKEN)
+TELEGRAM_INIT_WEBHOOK_URL = 'https://api.telegram.org/bot{}/setWebhook?url=https://5c44d37a.ngrok.io/message' \
     .format(TOKEN)
 
 start_msg = "hello dear user.\n Sport league bot provides you important updates about your favorite matches " \
