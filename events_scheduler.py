@@ -5,6 +5,7 @@ import Message
 from Models import Matches_model, API_model
 from config import TOKEN
 
+
 API_model.get_today_games()
 # score_counter = 18;
 API_model.get_today_games()
@@ -14,8 +15,8 @@ s = sched.scheduler(time.time, time.sleep)
 def send_game_data():
     active_matches = Matches_model.get_subscription_list()
     for match in active_matches:
-        score = match["home_team"] + ": " + str(match["home_team_score"]) + ", " + match["visitor_team"] + ": " + str(
-            match["visitor_team_score"])
+        score = "\U0001F3C0 " + match["home_team"] + ": " + str(match["home_team_score"]) + ", " + match["visitor_team"] + ": " + \
+                str(match["visitor_team_score"]) + " \U0001F3C0"
         for user in match["users"]:
             print(str(user) + " " + str(match["match_id"]))
             Message.parseSend(TOKEN, str(user), score)
@@ -40,6 +41,7 @@ def send_game_data():
 
 def schedual_api_calls():
     API_model.get_live_score()
+    print("api call")
     s.enter(60, 1, schedual_api_calls, ())
 
 

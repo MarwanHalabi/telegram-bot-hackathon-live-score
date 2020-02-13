@@ -21,7 +21,7 @@ def message(user_message):
             requests.get("https://api.telegram.org/bot{}/sendMessage?chat_id={}&text={}&reply_markup={}"
                          .format(TOKEN, user_id, "please choose your selection", x.to_json()))
             print(x)
-        if command == "/start":
+        if command.lower().startswith("hi") or command == "/start":
             parse(TOKEN, user_message, start_msg)
         elif command == "List_today_matches":
             print("into list")
@@ -44,7 +44,7 @@ def message(user_message):
             requests.get("https://api.telegram.org/bot{}/sendMessage?chat_id={}&text={}&reply_markup={}"
                          .format(TOKEN, user_id, "Unsubscribe to match", x.to_json()))
         elif command == "Help":
-            pass
+            parse(TOKEN, user_message, help)
         elif messageL[3] == "VS":
             parse(TOKEN, user_message, subscribe_msg(messageL[0]))
             Matches_model.add_match_subscription(messageL[0], user_id)
@@ -88,8 +88,9 @@ def match_show(list_of_matches: list):
 
 
 def make_match(item: dict):
-    return str(item["match_id"]) + "    " + item["home_team"] + "  VS  " + item["visitor_team"] \
-           + "   start time: " + item["start_time"].strftime("%m/%d/%Y, %H:%M:%S") + "\n"
+    return "Game: " + str(item["match_id"]) + "\n" + item["home_team"] + "   \U0001F19A   " + item["visitor_team"] \
+           + "\n" + "start at: " + item["start_time"].strftime("%H:%M") + "\n\n"
+
 
 
 # commands = {
