@@ -78,8 +78,8 @@ def get_live_matches():
 def update_score(match_status):
     query = "SELECT * FROM match_status WHERE match_id = {}".format(match_status["match_id"])
     result = get_data_from_DB(query)[0]
-    if result["home_team_score"] != match_status["home_team_score"] \
-            or result["visitor_team_score"] != match_status["visitor_team_score"]:
+    if str(result["home_team_score"]) != str(match_status["home_team_score"]) \
+            or str(result["visitor_team_score"]) != str(match_status["visitor_team_score"]):
         update_query = 'UPDATE `match_status` SET `home_team_score` = {}, ' \
                        '`visitor_team_score` = {}, `last_updated` = "{}", `CHANGED` = {} WHERE `match_id` = {}'. \
             format(match_status["home_team_score"], match_status["visitor_team_score"], datetime.now(), True, match_status["match_id"])
@@ -117,6 +117,16 @@ def get_user_favorite(user_id):
     for team in teams:
         teams_list.append(team["team_name"])
     return teams_list
+
+
+def get_user_matches(user_id):
+    query = "select matches.match_id,matches.home_team,matches.visitor_team,matches.start_time,matches.day_date " \
+            "FROM matches,match_subscription " \
+            "where match_subscription.user_id = {} and matches.match_id = match_subscription.match_id".format(user_id)
+    return get_data_from_DB(query)
+
+
+print(get_user_matches(818771304))
 
 
 def get_team_subscribers(team_name):

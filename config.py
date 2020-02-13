@@ -3,12 +3,15 @@ import pymysql
 connection = pymysql.connect(
     host="localhost",
     user="root",
-    password="root",
+    password="Mh081263",
     db="league",
     charset="utf8",
     cursorclass=pymysql.cursors.DictCursor
 )
 
+keyboard = [
+    ["List_today_matches"], ["subscribe_for_match"], ["Unsubscribe"], ["Mute"], ["Help"], ["Cancel"]
+]
 
 port_number = 5002
 TOKEN = '1090954125:AAHA-WX4zsCnVr9pcm2nRXuwuuXDqaM1cQA'
@@ -25,6 +28,3 @@ start_msg = "hello dear user.\n Sport league bot provides you important updates 
 subscribe = "you just subscribed to {} match"
 unsubscribe = "you just unsubscribed to {} match"
 
-list_of_matches = [{"match_id": "123", "home_team": "name1", "visitor_team": "team2", "start_time": "11/12/2020 12:00"}
-    , {"match_id": "456", "home_team": "Al sokor", "visitor_team": "Al saha", "start_time": "11/12/2020 15:00"}
-    , {"match_id": "111", "home_team": "Roma", "visitor_team": "Milan", "start_time": "11/12/2020 15:00"}]

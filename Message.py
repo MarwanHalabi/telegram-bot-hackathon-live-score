@@ -1,7 +1,12 @@
+#!/usr/bin/python3
+
 from config import *
 import requests
 from Models import Matches_model
-# import telegram
+from telegram.ext import Updater
+from telegram.ext import CommandHandler, CallbackQueryHandler
+from telegram import InlineKeyboardButton, InlineKeyboardMarkup
+from telegram import ReplyKeyboardMarkup, ReplyKeyboardRemove
 
 
 def message(user_message):
@@ -11,31 +16,47 @@ def message(user_message):
         command = messageL[0]
         user_id = user_message['chat']['id']
         print(user_id)
+        if command == "start":
+            x = ReplyKeyboardMarkup(keyboard, one_time_keyboard=True, resize_keyboard=True)
+            requests.get("https://api.telegram.org/bot{}/sendMessage?chat_id={}&text={}&reply_markup={}"
+                         .format(TOKEN, user_id, "please choose your selection", x.to_json()))
+            print(x)
         if command == "/start":
             parse(TOKEN, user_message, start_msg)
-        elif command == "/list":
+        elif command == "List_today_matches":
             print("into list")
             list_of_matches = Matches_model.get_today_matches()
             parse(TOKEN, user_message, match_show(list_of_matches))
-        elif command == "/subscribe":
-            Matches_model.add_match_subscription(messageL[1], user_id)
-            parse(TOKEN, user_message, subscribe_msg(messageL[1]))
-        elif command == "/unsubscribe":
-            Matches_model.remove_match_subscription(messageL[1], user_id)
-            parse(TOKEN, user_message, unsubscribe_msg(messageL[1]))
+
+        elif command == "subscribe_for_match":
+            listOfMatches = [[str(item['match_id']) + "    " + item["home_team"] + "  VS  " + item["visitor_team"]]
+                             for item in Matches_model.get_today_matches()]
+            x = ReplyKeyboardMarkup(listOfMatches, one_time_keyboard=True, resize_keyboard=True)
+            requests.get("https://api.telegram.org/bot{}/sendMessage?chat_id={}&text={}&reply_markup={}"
+                         .format(TOKEN, user_id, "subscribe to match", x.to_json()))
+
+        elif command == "Unsubscribe":
+            matches = Matches_model.get_user_matches(user_id)
+            listOfMatches = [[str(item['match_id']) + "    " + item["home_team"] + "  Vs  " + item["visitor_team"]]
+                             for item in matches]
+            print(listOfMatches)
+            x = ReplyKeyboardMarkup(listOfMatches, one_time_keyboard=True, resize_keyboard=True)
+            requests.get("https://api.telegram.org/bot{}/sendMessage?chat_id={}&text={}&reply_markup={}"
+                         .format(TOKEN, user_id, "Unsubscribe to match", x.to_json()))
+        elif command == "Help":
+            pass
+        elif messageL[3] == "VS":
+            parse(TOKEN, user_message, subscribe_msg(messageL[0]))
+            Matches_model.add_match_subscription(messageL[0], user_id)
+
+        elif messageL[3] == "Vs":
+            Matches_model.remove_match_subscription(messageL[0], user_id)
+            parse(TOKEN, user_message, unsubscribe_msg(messageL[0]))
+
         elif command == "/choose sub type":
             pass
     except:
         pass
-
-# def UI():
-#     button_list = [
-#         InlineKeyboardButton("col1", callback_data=...),
-#         InlineKeyboardButton("col2", callback_data=...),
-#         InlineKeyboardButton("row 2", callback_data=...)
-#     ]
-#     reply_markup = InlineKeyboardMarkup(util.build_menu(button_list, n_cols=2))
-#     bot.send_message(..., "A two-column menu", reply_markup=reply_markup)
 
 
 def parse(token, user_message, parse_input):
@@ -70,8 +91,100 @@ def make_match(item: dict):
     return str(item["match_id"]) + "    " + item["home_team"] + "  VS  " + item["visitor_team"] \
            + "   start time: " + item["start_time"].strftime("%m/%d/%Y, %H:%M:%S") + "\n"
 
+
 # commands = {
 #     "/start": parse
 #     , "/list": parse
 #     , "/subscribe": parse
 # }
+
+
+# ###########    here we start    #########
+#
+# def start(bot, update):
+#     update.message.reply_text(main_menu_message(),
+#                               reply_markup=main_menu_keyboard())
+#
+#
+# def main_menu(bot, update):
+#     query = update.callback_query
+#     bot.edit_message_text(chat_id=query.message.chat_id,
+#                           message_id=query.message.message_id,
+#                           text=main_menu_message(),
+#                           reply_markup=main_menu_keyboard())
+#
+#
+# def first_menu(bot, update):
+#     query = update.callback_query
+#     bot.edit_message_text(chat_id=query.message.chat_id,
+#                           message_id=query.message.message_id,
+#                           text=first_menu_message(),
+#                           reply_markup=first_menu_keyboard())
+#
+#
+# def second_menu(bot, update):
+#     query = update.callback_query
+#     bot.edit_message_text(chat_id=query.message.chat_id,
+#                           message_id=query.message.message_id,
+#                           text=second_menu_message(),
+#                           reply_markup=second_menu_keyboard())
+#
+#
+# # and so on for every callback_data option
+# def first_submenu(bot, update):
+#     pass
+#
+#
+# def second_submenu(bot, update):
+#     pass
+#
+#
+# ############################ Keyboards #########################################
+# def main_menu_keyboard():
+#     keyboard = [[InlineKeyboardButton('Option 1', callback_data='m1')],
+#                 [InlineKeyboardButton('Option 2', callback_data='m2')],
+#                 [InlineKeyboardButton('Option 3', callback_data='m3')]]
+#     return InlineKeyboardMarkup(keyboard)
+#
+#
+# def first_menu_keyboard():
+#     keyboard = [[InlineKeyboardButton('Submenu 1-1', callback_data='m1_1')],
+#                 [InlineKeyboardButton('Submenu 1-2', callback_data='m1_2')],
+#                 [InlineKeyboardButton('Main menu', callback_data='main')]]
+#     return InlineKeyboardMarkup(keyboard)
+#
+#
+# def second_menu_keyboard():
+#     keyboard = [[InlineKeyboardButton('Submenu 2-1', callback_data='m2_1')],
+#                 [InlineKeyboardButton('Submenu 2-2', callback_data='m2_2')],
+#                 [InlineKeyboardButton('Main menu', callback_data='main')]]
+#     return InlineKeyboardMarkup(keyboard)
+#
+#
+# ############################# Messages #########################################
+# def main_menu_message():
+#     return 'Choose the option in main menu:'
+#
+#
+# def first_menu_message():
+#     return 'Choose the submenu in first menu:'
+#
+#
+# def second_menu_message():
+#     return 'Choose the submenu in second menu:'
+#
+#
+# ############################# Handlers #########################################
+# updater = Updater('xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx')
+#
+# updater.dispatcher.add_handler(CommandHandler('start', start))
+# updater.dispatcher.add_handler(CallbackQueryHandler(main_menu, pattern='main'))
+# updater.dispatcher.add_handler(CallbackQueryHandler(first_menu, pattern='m1'))
+# updater.dispatcher.add_handler(CallbackQueryHandler(second_menu, pattern='m2'))
+# updater.dispatcher.add_handler(CallbackQueryHandler(first_submenu,
+#                                                     pattern='m1_1'))
+# updater.dispatcher.add_handler(CallbackQueryHandler(second_submenu,
+#                                                     pattern='m2_1'))
+#
+# updater.start_polling()
+# ################################################################################
