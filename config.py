@@ -1,4 +1,5 @@
 import pymysql
+import datetime
 
 connection = pymysql.connect(
     host="localhost",
@@ -10,12 +11,16 @@ connection = pymysql.connect(
 )
 
 keyboard = [
-    ["List_today_matches"], ["subscribe_for_match"], ["Unsubscribe"], ["Mute"], ["Help"], ["Cancel"]
+    ["List_today_matches"], ["subscribe_for_match"],["Subscribe_future_matches"], ["Unsubscribe"], ["Mute"]
+    , ["Help"], ["Cancel"]
 ]
 
+this_week = [[str((datetime.datetime.today() + datetime.timedelta(days=i)))[0:10]]for i in range(7)]
+
+print(this_week)
 port_number = 5002
 TOKEN = '1090092876:AAFsH_CxLromgssfNqHMIVt27uQmqTRD_gA'
-TELEGRAM_INIT_WEBHOOK_URL = 'https://api.telegram.org/bot{}/setWebhook?url=https://55a6e4fa.ngrok.io/message' \
+TELEGRAM_INIT_WEBHOOK_URL = 'https://api.telegram.org/bot{}/setWebhook?url=https://dea76ff0.ngrok.io/message' \
     .format(TOKEN)
 
 start_msg = "Hi!! I'm Sport Bee \U0001F41D, How are you doing today? \n" \

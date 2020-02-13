@@ -6,9 +6,6 @@ from Models import Matches_model, API_model
 from config import TOKEN
 
 
-API_model.get_today_games()
-# score_counter = 18;
-API_model.get_today_games()
 s = sched.scheduler(time.time, time.sleep)
 
 

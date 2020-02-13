@@ -39,7 +39,10 @@ def message(user_message):
             x = ReplyKeyboardMarkup(listOfMatches, one_time_keyboard=True, resize_keyboard=True)
             requests.get("https://api.telegram.org/bot{}/sendMessage?chat_id={}&text={}&reply_markup={}"
                          .format(TOKEN, user_id, "Unsubscribe to match", x.to_json()))
-
+        elif command == "Subscribe_future_matches":
+            x = ReplyKeyboardMarkup(this_week, one_time_keyboard=True, resize_keyboard=True)
+            requests.get("https://api.telegram.org/bot{}/sendMessage?chat_id={}&text={}&reply_markup={}"
+                         .format(TOKEN, user_id, "Unsubscribe to match", x.to_json()))
         elif command == "Help":
             parse(TOKEN, user_message, help)
 
