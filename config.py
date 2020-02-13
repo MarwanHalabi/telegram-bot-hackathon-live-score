@@ -9,6 +9,9 @@ connection = pymysql.connect(
     cursorclass=pymysql.cursors.DictCursor
 )
 
+keyboard = [
+    ["List_today_matches"], ["subscribe_for_match"], ["Unsubscribe"], ["Mute"], ["Help"], ["Cancel"]
+]
 
 port_number = 5002
 TOKEN = '1090954125:AAHA-WX4zsCnVr9pcm2nRXuwuuXDqaM1cQA'
