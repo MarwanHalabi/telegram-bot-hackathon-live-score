@@ -177,7 +177,7 @@ def get_teams():
             json_response = api_response.json()
             teams = json_response["api"]["teams"]
             for t in teams:
-                team_data = {"team_id": t["teamId"], "name": t["fullName"],
-                             "nickname": t["nickname"],
-                             "logo": t["logo"]}
+                team_data = {"team_id": t["teamId"], "team_name": t["fullName"],
+                             "team_nickname": t["nickname"],
+                             "team_logo": t["logo"]}
                 Matches_model.add_team(team_data)
