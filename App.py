@@ -1,5 +1,3 @@
-
-
 from flask import Flask, request, Response
 from Message import *
 import Bot

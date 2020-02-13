@@ -1,5 +1,3 @@
-#!/usr/bin/python3
-
 from config import *
 import requests
 from Models import Matches_model, API_model

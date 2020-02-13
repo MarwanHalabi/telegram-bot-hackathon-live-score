@@ -138,9 +138,6 @@ def get_user_matches(user_id):
     return get_data_from_DB(query)
 
 
-print(get_user_matches(818771304))
-
-
 def get_team_subscribers(team_name):
     users_id_list = []
     query = "SELECT user_id FROM favorite_teams WHERE team_name = \"{}\"".format(team_name)
